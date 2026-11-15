@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>main</title>
+    </head>
+
+    <body>
+        <table>
+            <tr>
+                <th>Combinatie</th>
+
+                {% for author in authors %}
+                <th>{{ author }}</th>
+                {% endfor %}
+            </tr>
+
+            {% for author1 in authors %}
+            <tr>
+                <th>{{ author1 }}</th>
+
+                {% for author2 in authors %}
+                <td>
+                    {{ mistakes.get(author1, {}).get(author2, [])|join(", ") or "/" }}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>

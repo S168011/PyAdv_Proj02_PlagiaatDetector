@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Jinja 02</title>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Prijs</th>
+            </tr>
+            {% for item, price in price_list.items() %}
+            <tr>
+                <td>{{ item }}</td>
+                <td>{{ price }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>
