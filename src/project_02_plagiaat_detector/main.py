@@ -31,7 +31,7 @@ StudentC = [
 ]
 
 students = ["StudentA", "StudentB", "StudentC"]
-
+names = ["Kristof", "Stijn", "Isaac"]
 
 # Lege matrix maken
 mistakes = {
@@ -43,7 +43,6 @@ mistakes = {
     for student1 in students
 }
 
-
 # Manueel opmerkingen toevoegen
 mistakes["StudentA"]["StudentB"].append('zelfde spelfout: "aray"')
 mistakes["StudentA"]["StudentB"].append('zelfde spelfout: "pithon"')
@@ -54,6 +53,8 @@ mistakes["StudentA"]["StudentC"].append('zelfde spelfout: "pithon"')
 mistakes["StudentB"]["StudentC"].append('zelfde spelfout: "aray"')
 mistakes["StudentB"]["StudentC"].append('zelfde spelfout: "pithon"')
 
+#StudentA: Kristof, StudentB: ... laten genereren. keys met f-string?
+identities: dict = {student: name for student, name in zip(students, names)}
 
 env = jinja.Environment(
     loader=jinja.FileSystemLoader("./templates/"),
