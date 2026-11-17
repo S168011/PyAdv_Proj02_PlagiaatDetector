@@ -1,6 +1,12 @@
 from pathlib import Path
-lazy import jinja2 as jinja
-lazy import re
+import jinja2 as jinja
+import libcst as cst
+
+class CommentVisualizer(cst.CSTVisitor):
+    def visit_comments(self, node: cst.Comment):
+        return node.value
+
+visitor01 = CommentVisualizer()
 
 students = ["StudentA", "StudentB", "StudentC"]
 names = ["Kristof Michiels", "Stijn Doggen", "Vincent Nys"]
@@ -18,7 +24,7 @@ folder = Path(input("Enter the path of the to be searched folder:\n>"))
 
 pairings = [(students[i], students[(i + 1) % len(students)])for i in range(len(students))]
 
-comment_regex = re.compile(r"^#")
+# comment_regex = re.compile(r"^#")
 
 fileA_content = []
 fileB_content = []
@@ -45,10 +51,12 @@ for student_folderA in folder.iterdir():
                             fileB_content = [line.strip() for line in fileB_content]
 
                             for i in range(len(fileA_content)):
-                                # print(fileA_content[i])
-                                # print(fileB_content[i])
-                                # print()
-                                if (fileA_content[i] in fileB_content) and comment_regex.match(fileA_content[i]):
+                                
+                                source = cst.parse_module(fileA_content[i])
+                                is_comment = bool(source.visit(visitor01))
+                                print(is_comment)
+
+                                if (fileA_content[i] in fileB_content) and is_comment == True:
                                     if (identities[student_folderA.name], identities[student_folderB.name]) in pairings:
                                         mistakes[identities[student_folderA.name]][identities[student_folderB.name]].append("zelfde comment!")
                             fileA_content = []
