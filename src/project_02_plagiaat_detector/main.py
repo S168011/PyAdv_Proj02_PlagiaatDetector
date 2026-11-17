@@ -1,35 +1,6 @@
 from pathlib import Path
 lazy import jinja2 as jinja
-
-StudentA = [
-    "aray",
-    "pithon",
-    "recieve",
-    "definately",
-    "seperate",
-    "teh",
-    "occured"
-]
-
-StudentB = [
-    "aray",
-    "pithon",
-    "definately",
-    "enviroment",
-    "wich",
-    "untill",
-    "succesful"
-]
-
-StudentC = [
-    "aray",
-    "pithon",
-    "recieve",
-    "enviroment",
-    "acommodate",
-    "teh",
-    "wierd"
-]
+lazy import re
 
 students = ["StudentA", "StudentB", "StudentC"]
 names = ["Kristof Michiels", "Stijn Doggen", "Vincent Nys"]
@@ -47,7 +18,10 @@ folder = Path(input("Enter the path of the to be searched folder:\n>"))
 
 pairings = [(students[i], students[(i + 1) % len(students)])for i in range(len(students))]
 
-print(pairings)
+comment_regex = re.compile(r"^#")
+
+fileA_content = []
+fileB_content = []
 
 for student_folderA in folder.iterdir():
     if student_folderA.is_dir():
@@ -59,10 +33,26 @@ for student_folderA in folder.iterdir():
                 elif student_folderB.is_dir():
                     for fileB in student_folderB.iterdir():
                         if fileA.read_text() == fileB.read_text():
-                            if not student_folderA.name == student_folderB.name:
-                                if (identities[student_folderA.name], identities[student_folderB.name]) in pairings:
-                                    mistakes[identities[student_folderA.name]][identities[student_folderB.name]].append('zelfde bestand!')                        
+                            if (identities[student_folderA.name], identities[student_folderB.name]) in pairings:
+                                mistakes[identities[student_folderA.name]][identities[student_folderB.name]].append('zelfde bestand!')
+                        else:
+                            with open(fileA, "r") as fA:
+                                fileA_content = fA.readlines()
+                            with open(fileB, "r") as fB:
+                                fileB_content = fB.readlines()
 
+                            fileA_content = [line.strip() for line in fileA_content]
+                            fileB_content = [line.strip() for line in fileB_content]
+
+                            for i in range(len(fileA_content)):
+                                # print(fileA_content[i])
+                                # print(fileB_content[i])
+                                # print()
+                                if (fileA_content[i] in fileB_content) and comment_regex.match(fileA_content[i]):
+                                    if (identities[student_folderA.name], identities[student_folderB.name]) in pairings:
+                                        mistakes[identities[student_folderA.name]][identities[student_folderB.name]].append("zelfde comment!")
+                            fileA_content = []
+                            fileB_content = []
 print(mistakes)
 
 env = jinja.Environment(
